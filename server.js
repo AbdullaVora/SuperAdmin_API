@@ -23,11 +23,31 @@ app.use(express.json({ limit: "300mb" }));
 app.use(express.urlencoded({ extended: true, limit: "300mb" }));
 
 const corsOptions = {
-    origin: ["http://localhost:5173","https://superadmin-qmet.onrender.com"], // Change this to match your frontend URL
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:5173",
+            "https://superadmin-qmet.onrender.com"
+        ];
+
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error("Not allowed by CORS")); // Block the request
+        }
+    },
     methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization"
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true // Allow credentials if using cookies or authentication headers
 };
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://superadmin-qmet.onrender.com");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
+app.use(cors(corsOptions));
 // ✅ Ensure uploads directory exists on startup
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -49,8 +69,6 @@ ensureUploadsDirectory();
 
 // ✅ Serve static files from uploads directory
 app.use('/uploads', express.static(uploadDir))
-
-app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
