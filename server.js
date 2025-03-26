@@ -23,7 +23,7 @@ app.use(express.json({ limit: "300mb" }));
 app.use(express.urlencoded({ extended: true, limit: "300mb" }));
 
 const corsOptions = {
-    origin: "http://localhost:5173", // Change this to match your frontend URL
+    origin: ["http://localhost:5173","https://superadmin-qmet.onrender.com"], // Change this to match your frontend URL
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization"
 };
