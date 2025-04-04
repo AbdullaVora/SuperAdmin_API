@@ -96,7 +96,10 @@ const createProduct = async (req, res) => {
             variants,
             stockManagement,
             images,
-            thumbnail
+            thumbnail,
+            main,
+            forPage,
+            forSection
         } = req.body;
 
         // Create the initial product without images
@@ -111,9 +114,12 @@ const createProduct = async (req, res) => {
             stockManagement,
             images,
             thumbnail,
+            main,
+            forPage,
+            forSection
         });
 
-        
+
         let categoryId;
         if (category) {
             const addCategory = await categoriesModel.create({
@@ -125,7 +131,7 @@ const createProduct = async (req, res) => {
         } else {
             return res.status(404).json({ message: 'category not found' });
         }
-        
+
         let brandId;
         if (brand) {
             const brandCategory = await brandModel.create({
@@ -614,7 +620,7 @@ const getProductBySlug = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, slug, skuCode, brand, category, subcategory, description, details, additional, mrp, price, discount, stockManagement, variants, images, thumbnail, status } = req.body;
+        const { name, slug, skuCode, brand, category, subcategory, description, details, additional, mrp, price, discount, stockManagement, variants, images, thumbnail, status, main, forPage, forSection } = req.body;
         let thumbnailUrl = '';
 
         // Find product
@@ -635,7 +641,7 @@ const updateProduct = async (req, res) => {
         }
 
         const productUpdate = await productModel.findByIdAndUpdate(id, {
-            name, slug, skuCode, price, mrp, discount, description, stockManagement, images, thumbnail, status
+            name, slug, skuCode, price, mrp, discount, description, stockManagement, images, thumbnail, status, main, forPage, forSection
         })
 
         // // Handle image uploads

@@ -27,9 +27,32 @@ const sliderSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
-        sliderLink: {
+        // sliderLink: {
+        //     type: String,
+        //     required: true,
+        // },
+        description: {
+            type: String,
+        },
+        title: {
+            type: String,
+        },
+        price: {
+            type: String,
+        },
+        subTitle: {
+            type: String,
+        },
+        forPage: {
             type: String,
             required: true,
+        },
+        forSection: {
+            type: String,
+            required: true,
+        },
+        publisherName: {
+            type: String
         },
         updatedAt: {
             type: Date,

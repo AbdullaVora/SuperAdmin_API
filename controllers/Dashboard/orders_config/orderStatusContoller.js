@@ -1,3 +1,4 @@
+const AllOrders = require("../../../models/Dashboard/orders_config/allOrdersModel");
 const orderStatus = require("../../../models/Dashboard/orders_config/orderStatusModel");
 
 // Create a new order status
@@ -52,23 +53,42 @@ exports.getOrderStatusById = async (req, res) => {
 // Update an order status
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const order = await orderStatus.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        if (!order) {
-            return res.status(404).json({ success: false, message: 'Order status not found' });
+        const { orderCode, orderName, orderStatus } = req.body;
+
+        // Find the order first
+        const order = await AllOrders.findById(req.params.id);
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+
+        // Update only the 'name' field in cart, keeping other details intact
+        if (orderName) {
+            const namesArray = orderName.split(',').map(name => name.trim());
+
+            order.cart.forEach((item, index) => {
+                if (namesArray[index]) {
+                    item.name = namesArray[index]; // Update only the name field
+                }
+            });
         }
-        res.status(200).json({ success: true, data: order });
+
+        // Update other fields
+        order.orderCode = orderCode || order.orderCode;
+        order.orderStatus = orderStatus || order.orderStatus;
+
+        // Save the updated order
+        const updatedOrder = await order.save();
+
+        res.status(200).json(updatedOrder);
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
+
 
 // Delete an order status
 exports.deleteOrderStatus = async (req, res) => {
     try {
-        const order = await orderStatus.findByIdAndDelete(req.params.id);
+        console.log(req.params.id)
+        const order = await AllOrders.findByIdAndDelete(req.params.id);
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order status not found' });
         }

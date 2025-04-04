@@ -24,8 +24,15 @@ exports.getAllSliders = async (req, res) => {
             relatedTo: slider.relatedTo,
             sliderCategory: slider.category,
             sliderSubcategory: slider.subcategory,
+            forPage: slider.forPage,
+            forSection: slider.forSection,
+            title: slider.title,
+            subTitle: slider.subTitle,
+            publisherName: slider.publisherName,
+            price: slider.price,
             brand: slider.brand,
             sliderLink: slider.sliderLink,
+            description: slider.description,
             updatedAt: slider.updatedAt,
             // createdAt: slider.createdAt,
             status: slider.status,
@@ -56,7 +63,7 @@ exports.getSliderById = async (req, res) => {
 // Update a slider by ID
 exports.updateSlider = async (req, res) => {
     try {
-        const { name, relatedTo, category, subcategory, status,sliderLink, image } = req.body;
+        const { name, relatedTo, category, brand, subcategory, forPage, publisherName, forSection, title, subTitle, price, description, status, sliderLink, image } = req.body;
 
         // Check if the slider exists
         const slider = await sliderModel.findById(req.params.id);
@@ -77,7 +84,15 @@ exports.updateSlider = async (req, res) => {
         slider.relatedTo = relatedTo || slider.relatedTo;
         slider.category = category || slider.category;
         slider.subcategory = subcategory || slider.subcategory;
+        slider.forPage = forPage || slider.forPage;
+        slider.forSection = forSection || slider.forSection;
+        slider.title = title || slider.title;
+        slider.subTitle = subTitle || slider.subTitle;
+        slider.price = price || slider.price;
+        slider.description = description || slider.description;
+        slider.brand = brand || slider.brand;
         slider.sliderLink = sliderLink || slider.sliderLink;
+        slider.publisherName = publisherName || slider.publisherName;
         slider.image = image || slider.image;
         slider.status = status;
         slider.updatedAt = Date.now();

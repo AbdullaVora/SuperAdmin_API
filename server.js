@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
@@ -13,6 +13,7 @@ const sliderRoute = require("./routers/Dashboard/banner_config/sliderRoute")
 const bannerRoute = require("./routers/Dashboard/banner_config/bannerRoute")
 const couponRoute = require("./routers/Dashboard/banner_config/couponRoute")
 const orderStatusRoute = require("./routers/Dashboard/orders_config/orderStatusRoute");
+const ordersRoute = require("./routers/Dashboard/orders_config/allOrdersRoute");
 const paymentMethodRoute = require("./routers/Dashboard/website_config/paymentMethodRoute");
 const shippinPartnerRoute = require("./routers/Dashboard/website_config/shipingPartnerRoute");
 const socialLinksRoute = require("./routers/Dashboard/website_config/socialLinksRoute");
@@ -26,7 +27,10 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             "http://localhost:5173",
-            "https://superadmin-qmet.onrender.com"
+            "http://localhost:3000",
+            "http://192.168.10.11:3000",
+            "https://superadmin-qmet.onrender.com",
+            "https://fur-stpre-next-js.vercel.app"
         ];
 
         if (!origin || allowedOrigins.includes(origin)) {
@@ -41,7 +45,7 @@ const corsOptions = {
 };
 
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://superadmin-qmet.onrender.com");
+    res.header("Access-Control-Allow-Origin", "https://superadmin-qmet.onrender.com", "https://fur-stpre-next-js.vercel.app");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.header("Access-Control-Allow-Credentials", "true");
@@ -82,6 +86,7 @@ app.use("/api/dashboard", sliderRoute)
 app.use("/api/dashboard", bannerRoute)
 app.use("/api/dashboard", couponRoute)
 app.use("/api/dashboard", orderStatusRoute)
+app.use("/api/dashboard", ordersRoute)
 app.use("/api/dashboard", paymentMethodRoute)
 app.use("/api/dashboard", shippinPartnerRoute)
 app.use("/api/dashboard", socialLinksRoute)

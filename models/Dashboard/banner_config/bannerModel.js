@@ -7,6 +7,14 @@ const bannerSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        forPage: {
+            type: String,
+            required: true,
+        },
+        forSection: {
+            type: String,
+            required: true,
+        },
         desktopImage: {
             type: String,
             required: true,
@@ -14,6 +22,9 @@ const bannerSchema = new mongoose.Schema(
         mobileImage: {
             type: String,
             required: true,
+        },
+        description: {
+            type: String,
         },
         relatedTo: {
             type: String,
@@ -33,7 +44,6 @@ const bannerSchema = new mongoose.Schema(
         },
         bannerLink: {
             type: String,
-            required: true,
         },
         updatedAt: {
             type: Date,
