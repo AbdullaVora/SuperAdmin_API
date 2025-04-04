@@ -23,34 +23,49 @@ const productRoute = require("./routers/Dashboard/product/productRoute")
 app.use(express.json({ limit: "300mb" }));
 app.use(express.urlencoded({ extended: true, limit: "300mb" }));
 
-const corsOptions = {
-    origin: function (origin, callback) {
-        const allowedOrigins = [
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "http://192.168.10.11:3000",
-            "https://superadmin-qmet.onrender.com",
-            "https://fur-stpre-next-js.vercel.app"
-        ];
+// const corsOptions = {
+//     origin: function (origin, callback) {
+//         const allowedOrigins = [
+//             "http://localhost:5173",
+//             "http://localhost:3000",
+//             "http://192.168.10.11:3000",
+//             "https://superadmin-qmet.onrender.com",
+//             "https://fur-stpre-next-js.vercel.app"
+//         ];
 
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true); // Allow the request
-        } else {
-            callback(new Error("Not allowed by CORS")); // Block the request
-        }
-    },
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
-    credentials: true // Allow credentials if using cookies or authentication headers
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true); // Allow the request
+//         } else {
+//             callback(new Error("Not allowed by CORS")); // Block the request
+//         }
+//     },
+//     methods: "GET,POST,PUT,DELETE",
+//     allowedHeaders: "Content-Type,Authorization",
+//     credentials: true // Allow credentials if using cookies or authentication headers
+// };
+
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "https://superadmin-qmet.onrender.com", "https://fur-stpre-next-js.vercel.app");
+//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//     res.header("Access-Control-Allow-Credentials", "true");
+//     next();
+// });
+// app.use(cors(corsOptions));
+
+const corsOptions = {
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://192.168.10.11:3000",
+        "https://superadmin-qmet.onrender.com",
+        "https://fur-stpre-next-js.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 };
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://superadmin-qmet.onrender.com", "https://fur-stpre-next-js.vercel.app");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
 app.use(cors(corsOptions));
 // ✅ Ensure uploads directory exists on startup
 const uploadDir = path.join(__dirname, 'uploads');
