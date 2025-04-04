@@ -88,7 +88,7 @@ app.use("/api/dashboard", socialLinksRoute)
 app.use("/api/dashboard", productRoute)
 
 // Start the server
-app.listen(PORT, '192.168.10.11',(err) => {
+app.listen(PORT,(err) => {
     if (err) console.error(err);
     else connectDB(); console.log(`Server is running on http://192.168.10.11:${PORT}`);
 
