@@ -30,7 +30,8 @@ const corsOptions = {
             "http://localhost:3000",
             "http://192.168.10.11:3000",
             "https://superadmin-qmet.onrender.com",
-            "https://fur-stpre-next-js.vercel.app"
+            "https://fur-stpre-next-js.vercel.app",
+            "https://fur-stpre-next-7zstxuy2t-abdullavoras-projects.vercel.app"
         ];
 
         if (!origin || allowedOrigins.includes(origin)) {
