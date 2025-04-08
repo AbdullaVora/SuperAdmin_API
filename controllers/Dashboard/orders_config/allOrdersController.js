@@ -41,6 +41,7 @@ const getOrders = async (req, res) => {
         const orderStatus = orders.map((order) => ({
             _id: order._id,
             orderCode: order?.orderCode,
+            userEmail: order?.email,
             orderName: order?.cart.map((data) => data.name).join(', '),
             orderStatus: order?.orderStatus,
             updatedAt: order?.updatedAt,
