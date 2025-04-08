@@ -7,6 +7,7 @@ const AllOrders = require('../../../models/Dashboard/orders_config/allOrdersMode
 const createOrder = async (req, res) => {
     try {
         const newOrder = new AllOrders(req.body);
+        console.log('New Order:', newOrder);
         await newOrder.save();
         res.status(201).json(newOrder);
     } catch (error) {
@@ -31,7 +32,8 @@ const getOrders = async (req, res) => {
             shippingFees: order?.shippingFee,
             orderStatus: order?.orderStatus,
             updatedAt: order?.updatedAt,
-            createdAt: order?.createdAt
+            createdAt: order?.createdAt,
+            products: order?.cart || []
         }))
 
         const orderStatus = orders.map((order) => ({
@@ -73,14 +75,55 @@ const updateOrder = async (req, res) => {
     }
 };
 
-// Delete an order by ID
+// // Delete an order by ID
+// const deleteOrder = async (req, res) => {
+//     try {
+//         const deletedOrder = await AllOrders.findByIdAndDelete(req.params.id);
+//         if (!deletedOrder) return res.status(404).json({ message: 'Order not found' });
+//         res.status(200).json({ message: 'Order deleted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
 const deleteOrder = async (req, res) => {
     try {
-        const deletedOrder = await AllOrders.findByIdAndDelete(req.params.id);
-        if (!deletedOrder) return res.status(404).json({ message: 'Order not found' });
-        res.status(200).json({ message: 'Order deleted successfully' });
+        const productId = req.params.id; // Assuming productId is sent in URL params
+
+        // Find the order containing this product
+        const order = await AllOrders.findOne({
+            'cart._id': productId
+        });
+
+
+        if (!order) {
+            return res.status(404).json({ message: 'Product not found in any order' });
+        }
+
+        // Check number of products in the order
+        if (order.cart.length > 1) {
+            // Remove only the matching product
+            order.cart = order.cart.filter(
+                product => product._id.toString() !== productId
+            );
+
+            await order.save();
+            return res.status(200).json({
+                message: 'Product removed from order successfully',
+                remainingProducts: order.cart.length
+            });
+        } else {
+            // Delete entire order if only one product
+            await AllOrders.findByIdAndDelete(order._id);
+            return res.status(200).json({
+                message: 'Order deleted successfully as it contained only this product'
+            });
+        }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: error.message,
+            details: 'Error while processing product deletion'
+        });
     }
 };
 
