@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
         // Generate token
         const token = CryptoJS.AES.encrypt(user._id.toString(), process.env.SECRET_KEY).toString();
 
-        res.status(200).json({ message: 'Login successful', token, name: user.name });
+        res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
