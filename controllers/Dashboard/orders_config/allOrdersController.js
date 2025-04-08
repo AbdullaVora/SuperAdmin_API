@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const AllOrders = require('../../../models/Dashboard/orders_config/allOrdersModel');
+const User = require('../../../models/auth/userModel');
 
 
 // Create a new order
@@ -20,6 +21,7 @@ const getOrders = async (req, res) => {
     try {
         const orders = await AllOrders.find();
         const formatOrder = orders.map((order) => ({
+            userId: order.userId,
             _id: order._id,
             orderCode: order?.orderCode,
             orderName: order?.orderName,

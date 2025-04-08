@@ -106,6 +106,10 @@ const mongoose = require('mongoose');
 
 const ordersSchema = new mongoose.Schema(
     {
+        userId: {
+            type: String,
+            required: true
+        },
         orderCode: {
             type: String,
             trim: true,
