@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
         // Generate token
         const token = CryptoJS.AES.encrypt(user._id.toString(), process.env.SECRET_KEY).toString();
 
-        res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id });
+        res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id, email: user.email });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -73,7 +73,7 @@ const registerUser = async (req, res) => {
         const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
 
         // Send response with token and email
-        res.status(200).json({ message: "User registered successfully", name, token, id: newUser._id });
+        res.status(200).json({ message: "User registered successfully", name, token, id: newUser._id, email: newUser.email });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
