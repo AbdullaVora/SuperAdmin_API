@@ -102,7 +102,8 @@ const getUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
     try {
         const { id } = req.params
-        const users = await User.findByIdAndUpdate(id, req.body, { new: true });
+        const { name, email } = req.body
+        const users = await User.findByIdAndUpdate(id, { name: name, email: email }, { new: true });
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
