@@ -12,7 +12,7 @@ const checkEmail = async (req, res) => {
         if (!password) {
             checkOtp = generateOTP();
             await sendOTP(email, checkOtp); // Send OTP to the user's email
-            return res.status(200).json({ message: "OTP sent to email" });
+            return res.status(200).json({ message: "OTP sent to email", email });
         }
 
         const response = await User.findOne({ email });
@@ -22,7 +22,7 @@ const checkEmail = async (req, res) => {
             if (decryptedPassword !== password) {
                 return res.status(401).json({ message: 'Invalid credentials' });
             } else {
-                return res.status(200).json({ message: "credentials matched" });
+                return res.status(200).json({ message: "credentials matched", email });
             }
 
         } else {
@@ -45,7 +45,7 @@ const sendOTP = async (email, otp) => {
             service: "gmail", // Use your email service provider
             auth: {
                 user: "blackmask8866@gmail.com", // Replace with your email
-                pass: "lrfv rpou ostm qvgu"  
+                pass: "lrfv rpou ostm qvgu"
             }
         });
 
