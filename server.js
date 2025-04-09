@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const connectDB = require('./config/database');
 const loginRoute = require("./routers/auth/userRoute")
+const forgotRouter = require("./routers/auth/forgotRoute")
 const categoryRoute = require("./routers/Dashboard/product_config/categoryRoute")
 const variantsRoute = require("./routers/Dashboard/product_config/variantsRoute")
 const brandRoute = require("./routers/Dashboard/product_config/brandRoute")
@@ -76,6 +77,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api/auth", loginRoute)
+app.use("/api/auth", forgotRouter)
+
 app.use("/api/dashboard", categoryRoute)
 app.use("/api/dashboard", variantsRoute)
 app.use("/api/dashboard", brandRoute)
