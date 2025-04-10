@@ -73,7 +73,7 @@ const uploadDir = path.join(__dirname, 'uploads');
 app.use('/uploads', express.static(uploadDir))
 
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+    res.send('Welcome To My FurStore API!! Server Running.....');
 });
 
 app.use("/api/auth", loginRoute)
