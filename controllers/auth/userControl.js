@@ -1,21 +1,32 @@
 const CryptoJS = require('crypto-js');
 const dotenv = require('dotenv');
 const User = require('../../models/auth/userModel');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { login, register } = require('../../helpers/JoiValidation');
 
 dotenv.config();
 
 const loginUser = async (req, res) => {
     try {
+        const { error } = login.validate(req.body);
+
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
         const { email, mobile, password } = req.body;
+
+        if (!email && !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
 
         if (!password) {
             return res.status(400).json({ message: 'Password is required' });
         }
 
         // Check if at least one identifier is provided
-        if (!email && !mobile) {
-            return res.status(400).json({ message: 'Email or mobile is required' });
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
         }
 
         // Build the query based on provided identifier
@@ -44,10 +55,38 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
+
+        const { error } = register.validate(req.body);
+
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
         const { name, email, mobile, password } = req.body;
 
         // Build the query based on provided identifier
         const query = email ? { email } : { mobile };
+
+        if (!email && !password && !mobile && name) {
+            return res.status(400).json({ message: "All Fileds Are Required" });
+        }
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required' });
+        }
+
+        if (!mobile) {
+            return res.status(400).json({ message: 'Mobile is required' });
+        }
+
+        if (!password) {
+            return res.status(400).json({ message: 'Password is required' });
+        }
+
+        // Check if at least one identifier is provided
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
 
         // Check if user already exists
         const existingUser = await User.findOne(query);
