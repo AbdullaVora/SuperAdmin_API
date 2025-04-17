@@ -29,7 +29,7 @@ const register = Joi.object({
     password: Joi.string().min(6).allow("").messages({
         "string.min": "Password must be at least 6 characters long"
     })
-}).custom((value, helpers) => {
+}).custom((value, helpers) => { 
     if (!value.name && !value.email && !value.mobile && !value.password) {
         return helpers.message("All fields are required");
     }

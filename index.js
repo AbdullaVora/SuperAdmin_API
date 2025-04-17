@@ -19,6 +19,8 @@ const paymentMethodRoute = require("./routers/Dashboard/website_config/paymentMe
 const shippinPartnerRoute = require("./routers/Dashboard/website_config/shipingPartnerRoute");
 const socialLinksRoute = require("./routers/Dashboard/website_config/socialLinksRoute");
 const productRoute = require("./routers/Dashboard/product/productRoute")
+const addToCartRoute = require("./routers/ECommerce/addToCartRouter");
+const WishRoute = require("./routers/ECommerce/wishRouter")
 
 // Middleware to parse JSON requests
 app.use(express.json({ limit: "300mb" }));
@@ -91,6 +93,8 @@ app.use("/api/dashboard", paymentMethodRoute)
 app.use("/api/dashboard", shippinPartnerRoute)
 app.use("/api/dashboard", socialLinksRoute)
 app.use("/api/dashboard", productRoute)
+app.use("/api", addToCartRoute)
+app.use("/api", WishRoute)
 
 // Start the server
 app.listen(PORT,(err) => {
