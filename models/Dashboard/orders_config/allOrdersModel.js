@@ -194,28 +194,8 @@ const ordersSchema = new mongoose.Schema(
             //     ref: 'Product', // Reference to your Product model if you have one
             //     required: true
             // },
-            name: {
-                type: String,
-                required: true
-            },
-            slug: {
-                type: String,
-                required: true
-            },
-            skuCode: {
-                type: String,
-                required: true
-            },
-            price: {
-                type: Number,
-                required: true
-            },
-            mrp: {
-                type: Number,
-                required: true
-            },
-            discount: {
-                type: Number,
+            product: {
+                type: mongoose.Schema.Types.Mixed,
                 required: true
             },
             quantity: {

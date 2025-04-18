@@ -10,9 +10,9 @@ const createOrder = async (req, res) => {
         const newOrder = new AllOrders(req.body);
         console.log('New Order:', newOrder);
         await newOrder.save();
-        res.status(201).json(newOrder);
+        return res.status(201).json(newOrder);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 };
 
