@@ -2,11 +2,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const AllOrders = require('../../../models/Dashboard/orders_config/allOrdersModel');
 const User = require('../../../models/auth/userModel');
+const { orderValidation } = require('../../../helpers/JoiValidation');
 
 
 // Create a new order
 const createOrder = async (req, res) => {
     try {
+        const { firstName, lastName, email, city, state, zipCode } = req.body;
+
+        // Validate the request body using Joi
+        const { error } = orderValidation.validate({firstName, lastName, email, city, state, zipCode});
+
+        if (error) {
+            return res.status(400).json({ success: false, message: error.details[0].message });
+        }
+
         const newOrder = new AllOrders(req.body);
         console.log('New Order:', newOrder);
         await newOrder.save();
@@ -42,13 +52,14 @@ const getOrders = async (req, res) => {
             _id: order._id,
             orderCode: order?.orderCode,
             userEmail: order?.email,
-            orderName: order?.cart.map((data) => data.name).join(', '),
+            // orderName: order?.products[0]?.product?.name || 'null',
             orderStatus: order?.orderStatus,
             updatedAt: order?.updatedAt,
             isAction: true,
             isOrderStatus: true,
             status: order?.status || true
         }))
+        console.log(orderStatus)
         res.status(200).json({ orders: formatOrder, orderStatus: orderStatus });
         // res.status(200).json({ orders: orders });
     } catch (error) {

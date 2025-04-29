@@ -23,6 +23,7 @@ exports.getAllCoupons = async (req, res) => {
             Value: coupon.value,
             minAmount: coupon.min_amount,
             dateDetail: coupon.dateDetail,
+            timeDetail: coupon.timeDetail || null,
             // maxUsage: coupon.maxUsage,
             updatedAt: coupon.updatedAt,
             status: coupon.status, // Default status if not provided

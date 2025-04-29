@@ -2,12 +2,13 @@ const CryptoJS = require('crypto-js');
 const dotenv = require('dotenv');
 const User = require('../../models/auth/userModel');
 const jwt = require('jsonwebtoken');
-const { login, register } = require('../../helpers/JoiValidation');
+const { login, register, profileValidation } = require('../../helpers/JoiValidation');
 
 dotenv.config();
 
 const loginUser = async (req, res) => {
     try {
+        // console.log(req.body)
         const { error } = login.validate(req.body);
 
         if (error) {
@@ -47,7 +48,7 @@ const loginUser = async (req, res) => {
         // Generate token
         const token = CryptoJS.AES.encrypt(user._id.toString(), process.env.SECRET_KEY).toString();
 
-        res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id, email: user.email });
+        res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id, email: user.email, mobile: user.mobile });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -141,8 +142,12 @@ const getUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
     try {
         const { id } = req.params
-        const { name, email } = req.body
-        const users = await User.findByIdAndUpdate(id, { name: name, email: email }, { new: true });
+        // const { error } = login.validate(req.body);
+        // if (error) {
+        //     return res.status(400).json({ message: error.details[0].message });
+        // }
+        const { name, email, mobile} = req.body
+        const users = await User.findByIdAndUpdate(id, { name: name, email: email, mobile: mobile }, { new: true });
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });

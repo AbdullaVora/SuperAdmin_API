@@ -12,6 +12,7 @@ require('dotenv').config();
 const multer = require('multer');
 const Brand = require('../../../models/Dashboard/product_config/brandModel');
 const brandModel = require('../../../models/Dashboard/product/brandModel');
+const { uploadImage, uploadMultipleImages } = require('../../../helpers/Cloudinary');
 
 
 // ✅ Base Upload Directory
@@ -102,6 +103,15 @@ const createProduct = async (req, res) => {
             forSection
         } = req.body;
 
+
+        // Upload images in parallel
+        const [uploadedThumbnail, uploadedMain, uploadedImages] = await Promise.all([
+            uploadImage(thumbnail || product.thumbnail),
+            uploadImage(main || product.main),
+            uploadMultipleImages(images.length ? images : product.images)
+        ]);
+
+
         // Create the initial product without images
         const product = await productModel.create({
             name,
@@ -112,9 +122,9 @@ const createProduct = async (req, res) => {
             discount,
             description,
             stockManagement,
-            images,
-            thumbnail,
-            main,
+            images: uploadedImages,
+            thumbnail: uploadedThumbnail,
+            main: uploadedMain,
             forPage,
             forSection
         });
@@ -640,8 +650,15 @@ const updateProduct = async (req, res) => {
             });
         }
 
+        // Upload images in parallel
+        const [uploadedThumbnail, uploadedMain, uploadedImages] = await Promise.all([
+            uploadImage(thumbnail || product.thumbnail),
+            uploadImage(main || product.main),
+            uploadMultipleImages(images.length ? images : product.images)
+        ]);
+
         const productUpdate = await productModel.findByIdAndUpdate(id, {
-            name, slug, skuCode, price, mrp, discount, description, stockManagement, images, thumbnail, status, main, forPage, forSection
+            name, slug, skuCode, price, mrp, discount, description, stockManagement, images : uploadedImages, thumbnail : uploadedThumbnail, status, main: uploadedMain, forPage, forSection
         })
 
         // // Handle image uploads

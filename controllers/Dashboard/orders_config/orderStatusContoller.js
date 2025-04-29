@@ -1,12 +1,13 @@
+const { orderValidation } = require("../../../helpers/JoiValidation");
 const AllOrders = require("../../../models/Dashboard/orders_config/allOrdersModel");
 const orderStatus = require("../../../models/Dashboard/orders_config/orderStatusModel");
 
 // Create a new order status
 exports.createOrderStatus = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const order = await orderStatus.create(req.body);
-        console.log(order);
+        // console.log(order);
         res.status(201).json({ success: true, data: order });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
@@ -17,6 +18,8 @@ exports.createOrderStatus = async (req, res) => {
 exports.getAllOrderStatuses = async (req, res) => {
     try {
         const orders = await orderStatus.find();
+
+        console.log(orders)
 
         // Format the response similar to your coupon format
         const formattedOrders = orders.map((order) => ({
@@ -54,9 +57,17 @@ exports.getOrderStatusById = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
     try {
         const { orderCode, orderName, orderStatus } = req.body;
+        const { id } = req.params
+
 
         // Find the order first
-        const order = await AllOrders.findById(req.params.id);
+        const order = await AllOrders.findOne({
+            $or: [
+                { _id: id },
+                { 'cart._id': id }
+            ]
+        });
+        // console.log(order)
         if (!order) return res.status(404).json({ message: 'Order not found' });
 
         // Update only the 'name' field in cart, keeping other details intact
