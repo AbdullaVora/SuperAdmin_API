@@ -22,44 +22,44 @@ const login = Joi.object({
 
 const profileValidation = Joi.object({
     name: Joi.string()
-      .pattern(/^[A-Za-z\s]+$/)
-      .min(3)
-      .allow("")
-      .messages({
-        "string.pattern.base": "Name must contain only alphabets and spaces",
-        "string.min": "Name must be at least 3 characters long",
-      }),
-  
+        .pattern(/^[A-Za-z\s]+$/)
+        .min(3)
+        .allow("")
+        .messages({
+            "string.pattern.base": "Name must contain only alphabets and spaces",
+            "string.min": "Name must be at least 3 characters long",
+        }),
+
     email: Joi.string()
-      .email()
-      .allow("")
-      .messages({
-        "string.email": "Email must be a valid email address",
-      }),
-  
+        .email()
+        .allow("")
+        .messages({
+            "string.email": "Email must be a valid email address",
+        }),
+
     mobile: Joi.string().custom((value, helpers) => {
-      if (value === "") return value;
-      const mobileStr = String(value);
-      if (!isValidPhoneNumber(mobileStr)) {
-        return helpers.message("Phone number must be valid (include country code if needed)");
-      }
-      return mobileStr;
+        if (value === "") return value;
+        const mobileStr = String(value);
+        if (!isValidPhoneNumber(mobileStr)) {
+            return helpers.message("Phone number must be valid (include country code if needed)");
+        }
+        return mobileStr;
     }),
-  
+
     password: Joi.string()
-      .min(7)
-      .pattern(/^[a-zA-Z0-9!@#$%^&*()_+=-]+$/)
-      .messages({
-        "string.min": "Password must be at least 7 characters long",
-        "string.pattern.base": "Password can only contain letters, numbers, and special characters",
-      }),
-  }).custom((value, helpers) => {
+        .min(7)
+        .pattern(/^[a-zA-Z0-9!@#$%^&*()_+=-]+$/)
+        .messages({
+            "string.min": "Password must be at least 7 characters long",
+            "string.pattern.base": "Password can only contain letters, numbers, and special characters",
+        }),
+}).custom((value, helpers) => {
     if (!value.name && !value.email && !value.mobile && !value.password) {
-      return helpers.message("All field is required");
+        return helpers.message("All field is required");
     }
     return value;
-  });
-  
+});
+
 
 const register = Joi.object({
     name: Joi.string()
@@ -192,5 +192,46 @@ const orderValidation = Joi.object({
 
 });
 
+const updateUserValidation = Joi.object({
+    name: Joi.string()
+        .pattern(/^[A-Za-z\s]+$/)
+        .min(3)
+        .allow("")
+        .messages({
+            "string.pattern.base": "Name must contain only alphabets and spaces",
+            "string.min": "Name must be at least 3 characters long"
+        }),
+    email: Joi.string()
+        .pattern(/^[\w.-]+@gmail\.com$/)
+        .required()
+        .messages({
+            'string.empty': 'Email is required',
+            'string.pattern.base': 'Only Gmail addresses are allowed (e.g., yourname@gmail.com)',
+        }),
+    phone: Joi.string().custom((value, helpers) => {
+        if (value === "") return value;
+        const phoneStr = String(value);
+        if (!isValidPhoneNumber(phoneStr)) {
+            return helpers.message("Phone number must be valid (include country code if needed)");
+        }
+        return phoneStr;
+    }).allow(""),
+    mobile: Joi.string().custom((value, helpers) => {
+        if (value === "") return value;
+        const mobileStr = String(value);
+        if (!isValidPhoneNumber(mobileStr)) {
+            return helpers.message("Mobile number must be valid (include country code if needed)");
+        }
+        return mobileStr;
+    }).allow("")
+}).custom((value, helpers) => {
+    if (!value.name && !value.email && !value.phone && !value.mobile) {
+        return helpers.message("At least one field is required for update");
+    }
+    return value;
+});
 
-module.exports = { login, register, createInquiryJoi, profileValidation, orderValidation };
+
+
+
+module.exports = { login, register, createInquiryJoi, profileValidation, orderValidation, updateUserValidation };

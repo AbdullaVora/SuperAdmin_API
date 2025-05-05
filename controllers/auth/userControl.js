@@ -2,7 +2,7 @@ const CryptoJS = require('crypto-js');
 const dotenv = require('dotenv');
 const User = require('../../models/auth/userModel');
 const jwt = require('jsonwebtoken');
-const { login, register, profileValidation } = require('../../helpers/JoiValidation');
+const { login, register, profileValidation, updateUserValidation } = require('../../helpers/JoiValidation');
 
 dotenv.config();
 
@@ -142,10 +142,10 @@ const getUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
     try {
         const { id } = req.params
-        // const { error } = login.validate(req.body);
-        // if (error) {
-        //     return res.status(400).json({ message: error.details[0].message });
-        // }
+        const { error } = updateUserValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const { name, email, mobile} = req.body
         const users = await User.findByIdAndUpdate(id, { name: name, email: email, mobile: mobile }, { new: true });
         res.status(200).json(users);
