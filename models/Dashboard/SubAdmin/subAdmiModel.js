@@ -23,66 +23,55 @@ const subAdminSchema = new Schema({
     permissions: {
         dashboard: Boolean,
         banner_config: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         slider_config: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         product_config: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         coupon: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         category: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         variants: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         brands: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         orders_config: {
-            view: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         payments_methods: {  // Note: Fixed typo from "methods" to "methodss" to match your JSON
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         shipping_partners: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
         },
         social_links: {
-            view: Boolean,
             create: Boolean,
             edit: Boolean,
             delete: Boolean
@@ -97,6 +86,14 @@ const subAdminSchema = new Schema({
         type: Boolean,
         default: true
     },
+    isAction: {
+        type: Boolean,
+        default: true
+    },
+    isSubAdmin: {
+        type: Boolean,
+        default: true
+    }
 }, { timestamps: true });
 
 // // Hash password before saving

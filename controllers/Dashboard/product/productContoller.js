@@ -13,6 +13,7 @@ const multer = require('multer');
 const Brand = require('../../../models/Dashboard/product_config/brandModel');
 const brandModel = require('../../../models/Dashboard/product/brandModel');
 const { uploadImage, uploadMultipleImages } = require('../../../helpers/Cloudinary');
+const { uploader } = require('cloudinary').v2;
 
 
 // ✅ Base Upload Directory
@@ -104,11 +105,11 @@ const createProduct = async (req, res) => {
         } = req.body;
 
 
-        // Upload images in parallel
+        // // Upload images in parallel
         const [uploadedThumbnail, uploadedMain, uploadedImages] = await Promise.all([
-            uploadImage(thumbnail || product.thumbnail),
-            uploadImage(main || product.main),
-            uploadMultipleImages(images.length ? images : product.images)
+            uploadImage(thumbnail),
+            uploadImage(main),
+            uploadMultipleImages(images)
         ]);
 
 
@@ -658,7 +659,7 @@ const updateProduct = async (req, res) => {
         ]);
 
         const productUpdate = await productModel.findByIdAndUpdate(id, {
-            name, slug, skuCode, price, mrp, discount, description, stockManagement, images : uploadedImages, thumbnail : uploadedThumbnail, status, main: uploadedMain, forPage, forSection
+            name, slug, skuCode, price, mrp, discount, description, stockManagement, images: uploadedImages, thumbnail: uploadedThumbnail, status, main: uploadedMain, forPage, forSection
         })
 
         // // Handle image uploads
@@ -819,11 +820,99 @@ const updateProduct = async (req, res) => {
 
 
 // DELETE product
+// const deleteProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         // Find product
+//         const product = await productModel.findById(id)
+//             .populate('category')
+//             .populate('subcategory')
+//             .populate('variants')
+//             .populate('details')
+//             .populate('additional')
+//             .populate('brandCategory')
+//             .populate('brand');
+
+
+//         if (!product) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: 'Product not found'
+//             });
+//         }
+
+//         // Delete related documents properly
+//         if (product.category) {
+//             await categoriesModel.findByIdAndDelete(product.category._id);
+//         }
+
+//         if (product.subcategory) {
+//             await subCategoriesModel.findByIdAndDelete(product.subcategory._id);
+//         }
+
+//         if (product.variants) {
+//             await variantsModel.findByIdAndDelete(product.variants._id);
+//         }
+
+//         if (product.details) {
+//             await detailsModel.findByIdAndDelete(product.details._id);
+//         }
+
+//         if (product.additional) {
+//             await additionalModel.findByIdAndDelete(product.additional._id);
+//         }
+
+//         if (product.brand) {
+//             await brandModel.findByIdAndDelete(product.brand._id);
+//         }
+
+//         // // Delete associated files
+//         // const productDir = path.join('uploads', 'product', product._id.toString());
+//         // if (fs.existsSync(productDir)) {
+//         //     fs.rmSync(productDir, { recursive: true, force: true });
+//         // }
+
+//         // Delete the product itself
+//         await productModel.findByIdAndDelete(id);
+
+//         res.status(200).json({
+//             success: true,
+//             message: 'Product and associated data deleted successfully'
+//         });
+
+//     } catch (error) {
+//         console.error('Error deleting product:', error);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Failed to delete product',
+//             error: error.message
+//         });
+//     }
+// };
+
+
+const getPublicIdFromUrl = (url) => {
+    try {
+      const urlObj = new URL(url);
+      const parts = urlObj.pathname.split('/');
+  
+      const versionIndex = parts.findIndex(p => /^v\d+/.test(p)); // finds v1746707471
+      const publicIdParts = parts.slice(versionIndex + 1); // ['products', 'gglxtwhcelccccgko1re.jpg']
+      const publicId = publicIdParts.join('/').replace(/\.[^/.]+$/, ''); // remove .jpg, .png, etc.
+  
+      return publicId; // e.g. 'products/gglxtwhcelccccgko1re'
+    } catch (err) {
+      console.warn('Invalid Cloudinary URL:', url);
+      return null;
+    }
+  };
+  
+
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Find product
         const product = await productModel.findById(id)
             .populate('category')
             .populate('subcategory')
@@ -833,51 +922,42 @@ const deleteProduct = async (req, res) => {
             .populate('brandCategory')
             .populate('brand');
 
-
         if (!product) {
-            return res.status(404).json({
-                success: false,
-                message: 'Product not found'
-            });
+            return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        // Delete related documents properly
-        if (product.category) {
-            await categoriesModel.findByIdAndDelete(product.category._id);
+        // 🔥 Delete Cloudinary images
+        const allImageUrls = [
+            product.thumbnail,
+            product.main,
+            ...(Array.isArray(product.images) ? product.images : [])
+        ].filter(url => url && url.includes('res.cloudinary.com'));
+
+        for (const imageUrl of allImageUrls) {
+            const publicId = getPublicIdFromUrl(imageUrl);
+            if (publicId) {
+                console.log(publicId)
+                try {
+                    await uploader.destroy(publicId, { resource_type: 'image' });
+                } catch (err) {
+                    console.warn(`Failed to delete image ${publicId}:`, err.message);
+                }
+            }
         }
 
-        if (product.subcategory) {
-            await subCategoriesModel.findByIdAndDelete(product.subcategory._id);
-        }
+        // Delete related documents
+        if (product.category) await categoriesModel.findByIdAndDelete(product.category._id);
+        if (product.subcategory) await subCategoriesModel.findByIdAndDelete(product.subcategory._id);
+        if (product.variants) await variantsModel.findByIdAndDelete(product.variants._id);
+        if (product.details) await detailsModel.findByIdAndDelete(product.details._id);
+        if (product.additional) await additionalModel.findByIdAndDelete(product.additional._id);
+        if (product.brand) await brandModel.findByIdAndDelete(product.brand._id);
 
-        if (product.variants) {
-            await variantsModel.findByIdAndDelete(product.variants._id);
-        }
-
-        if (product.details) {
-            await detailsModel.findByIdAndDelete(product.details._id);
-        }
-
-        if (product.additional) {
-            await additionalModel.findByIdAndDelete(product.additional._id);
-        }
-
-        if (product.brand) {
-            await brandModel.findByIdAndDelete(product.brand._id);
-        }
-
-        // // Delete associated files
-        // const productDir = path.join('uploads', 'product', product._id.toString());
-        // if (fs.existsSync(productDir)) {
-        //     fs.rmSync(productDir, { recursive: true, force: true });
-        // }
-
-        // Delete the product itself
         await productModel.findByIdAndDelete(id);
 
         res.status(200).json({
             success: true,
-            message: 'Product and associated data deleted successfully'
+            message: 'Product, images, and associated data deleted successfully'
         });
 
     } catch (error) {

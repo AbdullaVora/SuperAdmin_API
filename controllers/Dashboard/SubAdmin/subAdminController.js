@@ -50,7 +50,7 @@ exports.createSubAdmin = async (req, res) => {
 // Get all sub-admins
 exports.getAllSubAdmins = async (req, res) => {
     try {
-        const subAdmins = await subAdminModel.find().select('-password');
+        const subAdmins = await subAdminModel.find();
         res.status(200).json({
             message: 'Sub-admins retrieved successfully',
             data: subAdmins
@@ -86,7 +86,7 @@ exports.updateSubAdmin = async (req, res) => {
             req.params.id,
             updates,
             { new: true, runValidators: true }
-        ).select('-password');
+        );
 
         if (!subAdmin) {
             return res.status(404).json({ message: 'Sub-admin not found' });
@@ -108,6 +108,11 @@ exports.deleteSubAdmin = async (req, res) => {
 
         if (!subAdmin) {
             return res.status(404).json({ message: 'Sub-admin not found' });
+        }
+
+        const deleteFromUserData = await User.findById({ email: subAdmin.email });
+        if (deleteFromUserData) {
+            await User.findByIdAndDelete(deleteFromUserData._id);
         }
 
         res.status(200).json({

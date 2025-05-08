@@ -61,6 +61,8 @@ const profileValidation = Joi.object({
 });
 
 
+const allowedRoles = ["user", "super-admin", "sub-admin"];
+
 const register = Joi.object({
     name: Joi.string()
         .pattern(/^[A-Za-z\s]+$/)
@@ -75,6 +77,12 @@ const register = Joi.object({
         .allow("")
         .messages({
             "string.email": "Email must be a valid email address"
+        }),
+    role: Joi.string()
+        .valid(...allowedRoles)
+        .optional()
+        .messages({
+            "any.only": `Role must be one of ${allowedRoles.join(", ")}`
         }),
     mobile: Joi.string().custom((value, helpers) => {
         if (value === "") return value;
@@ -94,8 +102,15 @@ const register = Joi.object({
     if (!value.name && !value.email && !value.mobile && !value.password) {
         return helpers.message("All fields are required");
     }
+
+    // Example: Require role for certain operations (e.g., when creating a privileged user)
+    if ((value.role === "super-admin" || value.role === "sub-admin") && !value.role) {
+        return helpers.message("Role is required when creating privileged users");
+    }
+
     return value;
 });
+
 
 // Validation schema for creating an inquiry
 const createInquiryJoi = Joi.object({

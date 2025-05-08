@@ -1,5 +1,6 @@
 const express = require('express');
 const { createOrder, getOrders, getOrderById, updateOrder, deleteOrder } = require('../../../controllers/Dashboard/orders_config/allOrdersController');
+const authMiddleware = require('../../../middleware/authToken');
 const router = express.Router();
 
 router.post('/addOrder', createOrder);

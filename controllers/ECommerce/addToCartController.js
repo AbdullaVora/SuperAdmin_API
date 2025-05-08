@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 exports.addToCart = async (req, res) => {
     try {
+        console.log("triger")
         console.log(req.body);
         const { userId, product, quantity, variant } = req.body;
         
@@ -65,7 +66,7 @@ exports.getCartItems = async (req, res) => {
     try {
         const { userId } = req.params;
 
-        const cartItems = await Cart.find({ userId })
+        const cartItems = await Cart.find({ userId }).populate('product')
             .sort({ createdAt: -1 });
 
         res.status(200).json(cartItems);
@@ -79,6 +80,7 @@ exports.getCartItems = async (req, res) => {
 exports.updateCartItem = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(req.params, req.body)
         const { quantity } = req.body;
 
         const cartItem = await Cart.findById(id);

@@ -96,9 +96,10 @@ app.use("/api/dashboard", shippinPartnerRoute)
 app.use("/api/dashboard", socialLinksRoute)
 app.use("/api/dashboard", productRoute)
 app.use("/api/dashboard", subAdminRoute)
-app.use("/api", addToCartRoute)
-app.use("/api", WishRoute)
-app.use("/api", inquiryRoute)
+
+app.use("/api/e-commerce", addToCartRoute)
+app.use("/api/e-commerce", WishRoute)
+app.use("/api/e-commerce", inquiryRoute)
 
 // Start the server
 app.listen(PORT,(err) => {

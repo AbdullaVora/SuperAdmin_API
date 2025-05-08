@@ -87,6 +87,7 @@ exports.getBannerById = async (req, res) => {
 // Update a banner by ID
 exports.updateBanner = async (req, res) => {
     try {
+        console.log('Type of body:', typeof req.body);
         const banner = await bannerModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!banner) {
             return res.status(404).json({ success: false, message: "Banner not found" });

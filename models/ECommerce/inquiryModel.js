@@ -17,17 +17,21 @@ const inquirySchema = new mongoose.Schema({
     message: {
         type: String,
         required: [true, 'Message is required'],
-        minlength: [10, 'Message should be at least 10 characters long']
+        minlength: [50, 'Message should be at least 50 characters long']
     },
     status: {
         type: String,
-        enum: ['new', 'in_progress', 'resolved'],
+        enum: ['new', 'process', 'resolved'],
         default: 'new'
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    isAction: {
+        type: Boolean,
+        default: true
+    },
+    isInquiry: {
+        type: Boolean,
+        default: true
     }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Inquiry', inquirySchema);

@@ -46,7 +46,7 @@ const loginUser = async (req, res) => {
         }
 
         // Generate token
-        const token = CryptoJS.AES.encrypt(user._id.toString(), process.env.SECRET_KEY).toString();
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "24h" });
 
         res.status(200).json({ message: 'Login successful', token, name: user.name, id: user._id, email: user.email, mobile: user.mobile });
     } catch (error) {
@@ -110,7 +110,7 @@ const registerUser = async (req, res) => {
         await newUser.save();
 
         // Generate JWT token
-        const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.SECRET_KEY, { expiresIn: "24h" });
 
         // Send response with token and email
         res.status(200).json({ message: "User registered successfully", name, token, id: newUser._id, email: newUser.email });
@@ -127,6 +127,7 @@ const getUsers = async (req, res) => {
             name: user.name,
             mobile: user.mobile,
             email: user.email,
+            role: user.role,
             password: user.password,
             createdAt: user.createdAt,
         }))
@@ -146,7 +147,8 @@ const updateUsers = async (req, res) => {
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
-        const { name, email, mobile} = req.body
+        console.log(req.body)
+        const { name, email, mobile } = req.body
         const users = await User.findByIdAndUpdate(id, { name: name, email: email, mobile: mobile }, { new: true });
         res.status(200).json(users);
     } catch (error) {
