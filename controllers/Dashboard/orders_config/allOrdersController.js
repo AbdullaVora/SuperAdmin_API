@@ -11,7 +11,7 @@ const createOrder = async (req, res) => {
         const { firstName, lastName, email, city, state, zipCode } = req.body;
 
         // Validate the request body using Joi
-        const { error } = orderValidation.validate({firstName, lastName, email, city, state, zipCode});
+        const { error } = orderValidation.validate({ firstName, lastName, email, city, state, zipCode });
 
         if (error) {
             return res.status(400).json({ success: false, message: error.details[0].message });
@@ -38,6 +38,7 @@ const getOrders = async (req, res) => {
             userEmail: order?.email,
             billingDetail: order?.firstName + ' ' + order?.lastName,
             amount: order?.total,
+            discount: order?.discount,
             paymentMethod: order?.paymentMethod,
             transactionID: order?.upiDetails?.upiId || order?.cardDetails?.cardNumber,
             shippingDetail: order?.address + ', ' + order?.city + ', ' + order?.state + ', ' + order?.zipCode,
@@ -45,16 +46,19 @@ const getOrders = async (req, res) => {
             orderStatus: order?.orderStatus,
             updatedAt: order?.updatedAt,
             createdAt: order?.createdAt,
-            products: order?.cart || []
+            products: order?.cart || [],
+            isAction: true,
+            isOrders: true,
         }))
 
         const orderStatus = orders.map((order) => ({
             _id: order._id,
             orderCode: order?.orderCode,
             userEmail: order?.email,
-            // orderName: order?.products[0]?.product?.name || 'null',
+            products: order?.cart || [],
             orderStatus: order?.orderStatus,
-            updatedAt: order?.updatedAt,
+            createdAt: order?.createdAt,
+            // updatedAt: order?.updatedAt,
             isAction: true,
             isOrderStatus: true,
             status: order?.status || true

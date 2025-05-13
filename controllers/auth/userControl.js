@@ -130,6 +130,9 @@ const getUsers = async (req, res) => {
             role: user.role,
             password: user.password,
             createdAt: user.createdAt,
+            isAction: user.isAction || true,
+            isUser: user.isUser || true,
+            status: user.status
         }))
         if (!users) {
             return res.status(404).json({ message: "No users found" });
@@ -143,16 +146,22 @@ const getUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
     try {
         const { id } = req.params
-        const { error } = updateUserValidation.validate(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
+        const { name, mobile, email, status } = req.body
+        // const { error } = updateUserValidation.validate({ name, email, phone });
+        // if (error) {
+        //     return res.status(400).json({ message: error.details[0].message });
+        // }
         console.log(req.body)
-        const { name, email, mobile } = req.body
-        const users = await User.findByIdAndUpdate(id, { name: name, email: email, mobile: mobile }, { new: true });
+        // const { name, email, mobile } = req.body
+        let users
+        if (Object.prototype.hasOwnProperty.call(req.body, "status")) {
+            users = await User.findByIdAndUpdate(id, { status: req.body.status }, { new: true });
+        } else {
+            users = await User.findByIdAndUpdate(id, { name: name, email: email, mobile: mobile }, { new: true });
+        }
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ message: error.message });
     }
 }
 

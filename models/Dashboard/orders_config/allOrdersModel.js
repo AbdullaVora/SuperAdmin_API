@@ -277,6 +277,10 @@ const ordersSchema = new mongoose.Schema(
 // ordersSchema.index({ paymentStatus: 1 });
 // ordersSchema.index({ createdAt: -1 });
 
-const AllOrders = mongoose.model('allOrders', ordersSchema);
+const 
+
+
+
+AllOrders = mongoose.model('allOrders', ordersSchema);
 
 module.exports = AllOrders; // Fix: was 'allOrders' but should be 'AllOrders'

@@ -5,7 +5,7 @@ const inquiryModel = require("../../models/ECommerce/inquiryModel");
 exports.createInquiry = async (req, res) => {
     try {
         const { error } = createInquiryJoi.validate(req.body);
-        
+
         if (error) {
             return res.status(400).send({ message: error.details[0].message });
         }
@@ -110,3 +110,20 @@ exports.updateInquiryStatus = async (req, res) => {
         });
     }
 };
+
+exports.deleteInquiry = async (req, res) => {
+    try {
+        const { id } = req.params
+        const inquiry = await inquiryModel.findByIdAndDelete(id);
+        if (!inquiry) {
+            return res.status(404).json({ success: false, message: 'Inquiry not found' });
+        }
+        res.status(200).json({ success: true, message: 'Inquiry deleted' });
+    } catch (error) {
+        console.error('Error updating inquiry:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to Delete inquiry'
+        });
+    }
+}

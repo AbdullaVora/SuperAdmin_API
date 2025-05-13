@@ -24,6 +24,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'super-admin', 'sub-admin'],
         default: 'user'
+    },
+    isAction: {
+        type: Boolean,
+        default: true
+    },
+    isUser: {
+        type: Boolean,
+        default: true
+    },
+    status: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true });
 

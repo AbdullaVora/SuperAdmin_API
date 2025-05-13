@@ -25,56 +25,78 @@ const subAdminSchema = new Schema({
         banner_config: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         slider_config: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         product_config: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
+        },
+        productInquiry: {
+            //create: Boolean,
+            edit: Boolean,
+            delete: Boolean,
+            active: Boolean
         },
         coupon: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         category: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         variants: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         brands: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         orders_config: {
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         payments_methods: {  // Note: Fixed typo from "methods" to "methodss" to match your JSON
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         shipping_partners: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
         },
         social_links: {
             create: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            active: Boolean
+        },
+        users_config: {
+            edit: Boolean,
+            delete: Boolean,
+            active: Boolean
         }
     },
     role: {
