@@ -56,8 +56,11 @@ exports.getOrderStatusById = async (req, res) => {
 // Update an order status
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const { orderCode, orderName, orderStatus } = req.body;
+        const { orderCode, orderName, orderStatus, isDeleted } = req.body;
         const { id } = req.params
+
+        // console.log(req.body)
+        // console.log(id)
 
 
         // Find the order first
@@ -67,7 +70,7 @@ exports.updateOrderStatus = async (req, res) => {
                 { 'cart._id': id }
             ]
         });
-        // console.log(order)
+        console.log(order)
         if (!order) return res.status(404).json({ message: 'Order not found' });
 
         // Update only the 'name' field in cart, keeping other details intact
@@ -79,6 +82,12 @@ exports.updateOrderStatus = async (req, res) => {
                     item.name = namesArray[index]; // Update only the name field
                 }
             });
+        }
+
+        if (isDeleted) {
+            order.cart.forEach((item) => {
+                item.product.isDeleted = isDeleted || false
+            })
         }
 
         // Update other fields

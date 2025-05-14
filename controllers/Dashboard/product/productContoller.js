@@ -120,7 +120,7 @@ const createProduct = async (req, res) => {
             skuCode,
             price,
             mrp,
-            discount,
+            mainDiscount: discount,
             description,
             stockManagement,
             images: uploadedImages,
@@ -659,7 +659,7 @@ const updateProduct = async (req, res) => {
         ]);
 
         const productUpdate = await productModel.findByIdAndUpdate(id, {
-            name, slug, skuCode, price, mrp, discount, description, stockManagement, images: uploadedImages, thumbnail: uploadedThumbnail, status, main: uploadedMain, forPage, forSection
+            name, slug, skuCode, price, mrp, mainDiscount: discount, description, stockManagement, images: uploadedImages, thumbnail: uploadedThumbnail, status, main: uploadedMain, forPage, forSection
         })
 
         // // Handle image uploads

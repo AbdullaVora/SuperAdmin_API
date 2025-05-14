@@ -231,7 +231,7 @@ const ordersSchema = new mongoose.Schema(
             required: true,
             min: 0
         },
-        discount: {
+        couponDiscount: {
             type: Number,
             default: 0,
             min: 0
@@ -261,6 +261,10 @@ const ordersSchema = new mongoose.Schema(
             type: String,
             enum: ['pending', 'paid', 'failed', 'refunded'],
             default: 'pending'
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
         }
     },
     {
